@@ -1,0 +1,18 @@
+{
+  "D": [
+    ["delay", "num", "num", "num", "linebreak", "R"],
+    ["delay", "num", "num", "num", "linebreak", "D"],
+    ["delay", "num", "num", "num", "linebreak", "C"]
+  ],
+  "R": [
+    ["rate", "num", "num", "num", "linebreak", "R"],
+    ["rate", "num", "num", "num", "linebreak", "D"],
+    ["rate", "num", "num", "num", "linebreak", "C"]
+  ],
+  "C": [
+    ["null"],
+    ["contact", "id", "id", "num", "num", "linebreak", "D"],
+    ["contact", "id", "id", "num", "num", "linebreak", "R"]
+  ],
+  "S": [["C"]]
+}

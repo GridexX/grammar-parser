@@ -3,20 +3,24 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write ./src",
-    "start": "node --loader ts-node/esm src/index.ts",
+    "start": "node --loader ts-node/esm src/bin/index.ts",
+    "start2": "node --loader ts-node/esm src/isLanguageCorrect.ts rules.json grammar.txt",
     "build": "npx tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/commander": "^2.12.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.3.2"
   },
   "dependencies": {
+    "commander": "^11.1.0",
     "zod": "^3.22.4"
   }
 }
