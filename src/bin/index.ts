@@ -12,7 +12,7 @@ const program = new Command();
 
 program
   .name("rules-checker")
-  .description("Check if a input file is correct amoung a Grammar file")
+  .description("Check if a input file is correct amoung a rule file")
   .version("1.0.0")
   .requiredOption("-i, --input <path>", "Path to the input file.")
   .requiredOption(
@@ -21,10 +21,19 @@ program
   )
   .action((options) => {
     const { input, rules } = options;
-    console.log(`${input}, ${rules}`);
 
-    const { data: parsedRules } = checkRules(rules);
-    const { data: inputString } = readInputFile(input);
+    const res = readInputFile(rules);
+
+    const data = res.data;
+
+    const { data: inputString, error } = readInputFile(input);
+
+    if (res.error || error) {
+      process.exit(1);
+    }
+
+    const { data: parsedRules } = checkRules(data + "");
+
     if (parsedRules && inputString) {
       const startRule = "S";
       const tokens = tokenize2(inputString);

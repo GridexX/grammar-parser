@@ -1,12 +1,11 @@
 import { ZodError, z } from "zod";
-import * as fs from "fs";
 
-const RuleSchema = z.array(z.array(z.string()));
+export const ruleSchema = z.array(z.array(z.string()));
+export type RuleSchema = z.infer<typeof ruleSchema>;
 
 // This functions takes an rule file and check if it match the intended object
-export const checkRules = (rulesFile: string) => {
+export const checkRules = (rulesString: string) => {
   try {
-    const rulesString = fs.readFileSync(rulesFile).toString();
     const rules = JSON.parse(rulesString);
 
     if (typeof rules !== "object") {
@@ -16,7 +15,7 @@ export const checkRules = (rulesFile: string) => {
     // Dynamically generate Zod schema based on keys of the rules object
     const dynamicSchema = z.object(
       Object.fromEntries(
-        Object.entries(rules).map(([key]) => [key, RuleSchema])
+        Object.entries(rules).map(([key]) => [key, ruleSchema])
       )
     );
 
