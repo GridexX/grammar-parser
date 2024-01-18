@@ -2,8 +2,10 @@ import { Command } from "commander";
 import { checkRules } from "../lib/checkRules";
 import {
   isLanguageCorrect,
+  isLanguageCorrect2,
   readInputFile,
   tokenize,
+  tokenize2,
 } from "../lib/isLanguageCorrect";
 
 const program = new Command();
@@ -23,15 +25,14 @@ program
 
     const { data: parsedRules } = checkRules(rules);
     const { data: inputString } = readInputFile(input);
-    console.log(`rules: ${parsedRules}, input: ${inputString}`);
-    if (typeof parsedRules !== "undefined" && inputString) {
+    if (parsedRules && inputString) {
       const startRule = "S";
-      const tokens = tokenize(inputString);
+      const tokens = tokenize2(inputString);
       console.log("Tokens:", JSON.stringify(tokens));
       console.log("Rules:", JSON.stringify(parsedRules));
 
       try {
-        const result = isLanguageCorrect(tokens, parsedRules, startRule);
+        const result = isLanguageCorrect2(tokens, parsedRules, startRule);
         console.log("RESULT: ", result);
       } catch (error) {
         console.error(`Error: ${error}`);

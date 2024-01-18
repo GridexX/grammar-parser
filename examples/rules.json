@@ -1,18 +1,18 @@
 {
   "D": [
-    ["delay", "num", "num", "num", "linebreak", "R"],
-    ["delay", "num", "num", "num", "linebreak", "D"],
-    ["delay", "num", "num", "num", "linebreak", "C"]
+    ["delay", "num", "num", "num", "\n", "R"],
+    ["delay", "num", "num", "num", "\n", "D"],
+    ["delay", "num", "num", "num", "\n", "C"]
   ],
   "R": [
-    ["rate", "num", "num", "num", "linebreak", "R"],
-    ["rate", "num", "num", "num", "linebreak", "D"],
-    ["rate", "num", "num", "num", "linebreak", "C"]
+    ["rate", "num", "num", "num", "\n", "R"],
+    ["rate", "num", "num", "num", "\n", "D"],
+    ["rate", "num", "num", "num", "\n", "C"]
   ],
   "C": [
     ["null"],
-    ["contact", "id", "id", "num", "num", "linebreak", "D"],
-    ["contact", "id", "id", "num", "num", "linebreak", "R"]
+    ["contact", "id", "id", "num", "num", "\n", "D"],
+    ["contact", "id", "id", "num", "num", "\n", "R"]
   ],
   "S": [["C"]]
 }

@@ -7,7 +7,7 @@ const NON_TERMINAL = 1;
 const CONTACT: [number, string] = [TERMINAL, "contact"];
 const RATE: [number, string] = [TERMINAL, "rate"];
 const DELAY: [number, string] = [TERMINAL, "delay"];
-const NEWLINE: [number, string] = [TERMINAL, "linebreak"];
+const NEWLINE: [number, string] = [TERMINAL, "\n"];
 
 // Literals
 const NUMBER: [number, string] = [TERMINAL, "num"];
@@ -15,9 +15,41 @@ const IDENTIFIER: [number, string] = [TERMINAL, "id"];
 
 type Token = [number, string];
 
+type TokenType = "id" | "num" | "linebreak";
+
+type Token2 = {
+  type: TokenType;
+  data: string;
+};
+
+export function tokenize2(inputSequence: string): Token2[] {
+  const tokens: Token2[] = [];
+  const lines = inputSequence.split("\n");
+  for (const line of lines) {
+    const tokensByLine = line.split(" ");
+
+    for (const data of tokensByLine) {
+      // Number
+      if (!isNaN(Number(data))) {
+        tokens.push({ type: "num", data });
+      }
+
+      // Keywords
+      else if (typeof data === "string") {
+        tokens.push({ type: "id", data });
+      }
+    }
+    // Add newline token separately if the line is not empty
+    if (line.trim()) {
+      tokens.push({ type: "linebreak", data: "\n" });
+    }
+  }
+
+  return tokens.slice(0, -1); // Remove the extra newline at the end
+}
+
 export function tokenize(inputSequence: string): Token[] {
   const tokens: Token[] = [];
-
   const lines = inputSequence.split("\n");
   for (const line of lines) {
     const tokensByLine = line.split(" ");
@@ -42,7 +74,6 @@ export function tokenize(inputSequence: string): Token[] {
         tokens.push(IDENTIFIER);
       }
     }
-
     // Add newline token separately if the line is not empty
     if (line.trim()) {
       tokens.push(NEWLINE);
@@ -52,9 +83,9 @@ export function tokenize(inputSequence: string): Token[] {
   return tokens.slice(0, -1); // Remove the extra newline at the end
 }
 
-export function isLanguageCorrect(
-  tokens: Token[],
-  rules: {[x: string]: string[][]},
+export function isLanguageCorrect2(
+  tokens: Token2[],
+  rules: { [x: string]: string[][] },
   currentRule: string
 ): boolean {
   console.log(`Tokens: ${JSON.stringify(tokens)}, length: ${tokens.length}`);
@@ -72,12 +103,44 @@ export function isLanguageCorrect(
     const tokensCopy = [...tokens];
 
     for (const symbol of alternative) {
-      if (tokensCopy.length > 0 && symbol === tokensCopy[0][1]) {
+      // ShouldShift indicates if there was a match
+      let shouldShift = false;
+      if (tokensCopy.length > 0) {
+        // This function check whenever the token correspond to the rule
+        // Check the correct types
+        const { type, data } = tokensCopy[0];
+        // Rules with < > should match a terminal type
+        if (type === symbol.match(/<(\w+)>/)?.[1] ?? null) {
+          // We match linebreak
+          if (type === "linebreak") {
+            shouldShift = true;
+          }
+          // We ensure the good type for id or num
+          else if (
+            (type === "id" && isNaN(Number(data))) ||
+            (type === "num" && !isNaN(Number(data)))
+          ) {
+            shouldShift = true;
+          }
+        }
+        // Then we match keyword
+        // Fist check if the rules is a string and the data match
+        // Will match the exact word
+        else if (type === "id" && symbol === data) {
+          shouldShift = true;
+        }
+      }
+
+      if (tokensCopy.length > 0 && shouldShift) {
+        console.log(
+          `The rule ${symbol} matched the data ${tokensCopy[0].data}`
+        );
         tokensCopy.shift();
       } else if (symbol === "null") {
         continue;
       } else {
-        if (!isLanguageCorrect(tokensCopy, rules, symbol)) {
+        // Otherwise check the rules with the name
+        if (!isLanguageCorrect2(tokensCopy, rules, symbol)) {
           break;
         }
         return true;
@@ -85,6 +148,48 @@ export function isLanguageCorrect(
     }
   }
 
+  return false;
+}
+
+export function isLanguageCorrect(
+  tokens: Token[],
+  rules: { [x: string]: string[][] },
+  currentRule: string
+): boolean {
+  console.log(`Tokens: ${JSON.stringify(tokens)}, length: ${tokens.length}`);
+  console.log(`Current Rule: ${currentRule}`);
+
+  // If there are no more tokens, the language is correct.
+  if (tokens.length == 0) {
+    return true;
+  }
+
+  // If the current rule is not defined, the language is incorrect
+  if (!rules[currentRule]) {
+    return false;
+  }
+
+  for (const alternative of rules[currentRule]) {
+    const tokensCopy = [...tokens];
+
+    for (const symbol of alternative) {
+      // If the symbol matches the current token, consume the token
+      if (tokensCopy.length > 0 && symbol === tokensCopy[0][1]) {
+        tokensCopy.shift();
+        // If the symbol is "null," skip it without consuming any token.
+      } else if (symbol === "null") {
+        continue;
+      } else {
+        // Recursive case: Call isLanguageCorrect for non-terminal symbols.
+        // If the recursive call succeeds, return true; otherwise, break the loop.
+        if (!isLanguageCorrect(tokensCopy, rules, symbol)) {
+          break;
+        }
+        return true;
+      }
+    }
+  }
+  // None of the alternatives matched, return false.
   return false;
 }
 
