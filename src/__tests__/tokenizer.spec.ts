@@ -3,7 +3,7 @@ import {
   isLanguageCorrect2,
   readInputFile,
   tokenize2,
-} from "../lib/isLanguageCorrect";
+} from "../lib/isLanguageCorrect2";
 
 describe("The tokens and the rules", () => {
   it("Regular grammar with correct language", () => {

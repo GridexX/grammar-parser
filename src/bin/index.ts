@@ -1,15 +1,14 @@
 import { Command } from "commander";
 import { checkRules } from "../lib/checkRules";
 import {
-  isLanguageCorrect,
   isLanguageCorrect2,
   readInputFile,
-  tokenize,
   tokenize2,
-} from "../lib/isLanguageCorrect";
+} from "../lib/isLanguageCorrect2";
 
 const program = new Command();
 
+//
 program
   .name("rules-checker")
   .description("Check if a input file is correct amoung a rule file")
@@ -26,7 +25,7 @@ program
 
     const data = res.data;
 
-    const { data: inputString, error } = readInputFile(input);
+    const { data: inputString, error, success } = readInputFile(input);
 
     if (res.error || error) {
       process.exit(1);

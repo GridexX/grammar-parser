@@ -1,5 +1,5 @@
 import { RuleSchema, checkRules, ruleSchema } from "../lib/checkRules";
-import { readInputFile } from "../lib/isLanguageCorrect";
+import { readInputFile } from "../lib/isLanguageCorrect2";
 
 describe("Check the rules", () => {
   it("Correct rules should be parsed", () => {
